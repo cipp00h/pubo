@@ -4,6 +4,7 @@ from .models import Question
 from django.http import HttpResponseNotAllowed
 from .forms import QuestionForm, AnswerForm
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     page = request.GET.get('page', '1') # 페이지
@@ -18,6 +19,7 @@ def detail(request, question_id):
     context = {'question': question}
     return render(request, 'pybo/question_detail.html', context)
 
+@login_required(login_url='common:login')
 def answer_create(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     if request.method == "POST":
@@ -34,6 +36,7 @@ def answer_create(request, question_id):
     context = {'question': question, 'form': form}
     return render(request, 'pybo/question_detail.html', context)
 
+@login_required(login_url='common:login')
 def question_create(request):
     if request.method == "POST":        
         form = QuestionForm(request.POST)
